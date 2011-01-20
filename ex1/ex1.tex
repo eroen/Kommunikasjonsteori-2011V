@@ -1,0 +1,93 @@
+%!TEX TS−program = xetex
+%!TEX encoding = UTF−8 Unicode
+\documentclass[a4paper, twoside, fleqn]{scrartcl}
+\usepackage{amssymb}
+\usepackage{amsbsy}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{undertilde}
+\usepackage{xunicode}
+\usepackage{fontspec}
+\usepackage{xltxtra}
+\usepackage{polyglossia}
+\setmainlanguage{english}
+\setromanfont[Mapping=tex-text]{Linux Libertine O}
+\setsansfont[Mapping=tex-text]{Linux Biolinum O}
+\setmonofont[Mapping=tex-text, Scale=0.8]{DejaVu Sans Mono}
+% \setmonofont[Mapping=tex-text, Scale=0.9]{Courier New}
+%\setromanfont[Mapping=tex-text]{Times New Roman}
+%\setromanfont[Mapping=tex-text]{Arial}
+\usepackage{units}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{color}
+% \usepackage{transparent}
+\usepackage{listings}
+
+\renewcommand{\labelenumi}{\alph{enumi})}
+\renewcommand{\labelenumii}{\roman{enumii})}
+%\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}} % for vectors
+\renewcommand{\vec}[1]{\ensuremath{\boldsymbol{#1}}} % for vectors
+\newcommand{\mat}[1]{\ensuremath{\utilde{#1}}} % for matrices
+\newcommand{\curl}[1]{\ensuremath{\mathbf{\nabla} \times #1}} % 
+\newcommand{\abs}[1]{\ensuremath{\left| #1 \right|}} % 
+\newcommand{\conv}[0]{\ensuremath{\ast}} % 
+\newcommand{\E}[0]{\ensuremath{\text{E}}} % 
+\newcommand{\erf}[0]{\ensuremath{\text{erf}}} % 
+\newcommand{\re}[1]{\ensuremath{\text{Re}\left\{ #1 \right\}}} % 
+\renewcommand{\exp}[1]{\ensuremath{\text{e}^{ #1 }}} % 
+% \def\svgwidth{5cm}
+% \def\unitlength{10cm}
+\begin{document}
+\title{Exercise 1}
+\subject{TTT4115 Kommunikasjonsteori}
+\author{Erik Moen}
+\maketitle
+
+\section*{Problem 1}
+  \label{1}
+  \begin{align}
+    Y(t) &= X(t) + w(t) \\
+    f_Y(x) &= f_X(x) \conv f_w(x) \\
+    f_X(x) &= \frac 1 2 \left( \delta(x+1) + \delta(x-1) \right) \\
+    f_w(x) &= N(0, \sigma^2) \\
+    f_Y(x) &= \frac 1 2 \left( N(-1, \sigma^2) + N(1, \sigma^2) \right)
+  \end{align}
+  
+  \begin{align}
+    P(Y \geq \alpha) &= 1 - F_Y(\alpha) \\
+    F_w(\alpha) &= \Phi\left(\frac {\alpha} \sigma\right) \\
+    F_Y(\alpha) &= \frac 1 2 \left( \Phi\left(\frac {\alpha + 1} \sigma\right) + \Phi\left(\frac {\alpha - 1} \sigma\right) \right) \\
+    P(Y \geq \alpha) &= 1 - \frac 1 2 \left( \Phi\left(\frac {\alpha + 1} \sigma\right) + \Phi\left(\frac {\alpha - 1} \sigma\right) \right) \\
+    P(Y \geq \alpha) &= 1 - \frac 1 4 \left( 2 + \erf\left(\frac {\alpha + 1} {\sqrt 2 \sigma} \right) + \erf\left(\frac {\alpha - 1} {\sqrt 2 \sigma} \right) \right) \\
+  \end{align}
+
+\section*{Problem 2}
+  \label{2}
+  
+
+\section*{Problem 3}
+  \label{3}
+  \begin{enumerate}
+    \item 
+      \label{3a}
+      \begin{align}
+        R_X(\tau) &= \E \left[ X(t) X(t+\tau) \right] \\
+        &= \frac 1 T \int_0^T X(t) X(t+\tau) \, dt \\
+        R_X(0) &= \frac 1 T \int_0^T X(t) X(t) \, dt \\
+        &= \frac 1 T \int_0^T X^2(t) \, dt \\
+        &= \frac 1 T \int_0^T Y(t) \, dt = \E[Y(t)]
+      \end{align}
+      
+    \item
+      \label{3b}
+      \begin{gather}
+        \intertext{Autocovariance:}
+        K_{YY}(\tau) = \E[Y(t) Y(t+\tau)] \\
+        \E[Y(t) Y(t+\tau)] = \E[Y(t)] \E[Y(t+\tau) + 2 \E^2[\sqrt{Y(t)} \sqrt{Y(t+\tau)}]
+      \end{gather}
+
+  \end{enumerate}
+
+
+\end{document}
