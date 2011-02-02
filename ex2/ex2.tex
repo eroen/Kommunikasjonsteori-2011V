@@ -1,0 +1,196 @@
+%!TEX TS−program = xetex
+%!TEX encoding = UTF−8 Unicode
+\documentclass[a4paper, twoside, fleqn]{scrartcl}
+\usepackage{amssymb}
+\usepackage{amsbsy}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{undertilde}
+\usepackage{xunicode}
+\usepackage{fontspec}
+\usepackage{xltxtra}
+\usepackage{polyglossia}
+\setmainlanguage{english}
+\setromanfont[Mapping=tex-text]{Linux Libertine O}
+\setsansfont[Mapping=tex-text]{Linux Biolinum O}
+\setmonofont[Mapping=tex-text, Scale=0.8]{DejaVu Sans Mono}
+% \setmonofont[Mapping=tex-text, Scale=0.9]{Courier New}
+%\setromanfont[Mapping=tex-text]{Times New Roman}
+%\setromanfont[Mapping=tex-text]{Arial}
+\usepackage{units}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{color}
+% \usepackage{transparent}
+\usepackage{listings}
+
+\renewcommand{\labelenumi}{\alph{enumi})}
+\renewcommand{\theenumi}{\alph{enumi})}
+\renewcommand{\labelenumii}{\roman{enumii})}
+%\renewcommand{\vec}[1]{\ensuremath{\mathbf{#1}}} % for vectors
+\renewcommand{\vec}[1]{\ensuremath{\boldsymbol{#1}}} % for vectors
+\newcommand{\mat}[1]{\ensuremath{\utilde{#1}}} % for matrices
+\newcommand{\curl}[1]{\ensuremath{\mathbf{\nabla} \times #1}} % 
+\newcommand{\abs}[1]{\ensuremath{\left| #1 \right|}} % 
+\newcommand{\conv}[0]{\ensuremath{\ast}} % 
+\newcommand{\E}[0]{\ensuremath{\text{E}}} % 
+\newcommand{\erf}[0]{\ensuremath{\text{erf}}} % 
+\newcommand{\re}[1]{\ensuremath{\text{Re}\left\{ #1 \right\}}} % 
+\renewcommand{\exp}[1]{\ensuremath{\text{e}^{ #1 }}} % 
+% \def\svgwidth{5cm}
+% \def\unitlength{10cm}
+\begin{document}
+\title{Exercise 2}
+\subject{TTT4115 Kommunikasjonsteori}
+\author{Erik Moen}
+\maketitle
+
+\section*{Problem 1}
+  \label{1}
+  \begin{enumerate}
+    \item 
+      \label{1a}
+      \begin{align}
+	R_y(\tau) &= y(t) \conv y(\tau - t) \\
+	&= h(t) \conv x(t) \conv h(\tau - t) \conv x(\tau - t) \\
+	&= x(t) \conv x(\tau - t) \conv h(t) \conv h(\tau - t) \\
+	&= R_x(\tau) \conv \left( \int_{-\infty}^{\infty} h(t) h(t + \tau) \, dt \right)
+      \end{align}
+    
+    \item
+      \label{1b}
+      The rightmost part of the righthand side of the result in \ref{1a} is the autocorrelation of the filter transfer function and gives the leftmost part of the righthand side of the equation in \ref{1b} as a power spectrum when fourier transformed.
+      
+      The leftmost part of the righthand side of the result in \ref{1a} obviously gives the input power spectral density when fourier transformed.
+      
+      Lastly, a convolution is replaced with a multiplication when fourier transform is performed.
+      
+    \item
+      \label{1c}
+      \begin{align}
+        \sigma_y^2 &= E\{ y^2 \} - E\{y\}^2 = E\{ y^2 \} \\
+        &= R_y(0) \\
+        &= R_x(0) \conv \left( \int_{-\infty}^{\infty} h(t) h(t) \, dt \right) \\
+        &= R_x(0) \cdot \left( \int_{-\infty}^{\infty} h(t)^2 \, dt \right)
+      \end{align}
+      
+      \begin{align}
+        \sigma_y^2 &= \int_0^\infty S_y(f) \, df \\
+        &= \int_0^\infty \abs{H(f)}^2 S_x(f) \, df
+      \end{align}
+
+
+    \item
+      \label{1d}
+      X having unit variance gives:
+      \begin{align}
+        \sigma_x^2 &= 1 \\
+        R_x(0) &= 1 
+      \end{align}
+      
+      Remembering \ref{1c} we have:
+      \begin{align}
+        \sigma_y^2 &= R_x(0) \cdot \left( \int_{-\infty}^{\infty} h(t)^2 \, dt \right) \\
+        \sigma_y^2 &= \int_{-\infty}^{\infty} h(t)^2 \, dt 
+      \end{align}
+      $h(t)$ is still real, so the absolute value operator makes no significant difference to the expression.
+  \end{enumerate}
+  
+
+\section*{Problem 2}
+  \label{2}
+  \begin{enumerate}
+    \item 
+      \label{2a}
+      \begin{gather}
+        D(f) = X(f) - G(f) \big[ N(f) + H(f) X(f) \big]
+      \end{gather}
+      
+    \item
+      \label{2b}
+      We remember that X(f) is independent of N(f), thus the cross-correlation of the two is zero.
+      \begin{align}
+        S_D(f) &= D(f) \cdot D^*(f) \\
+        \begin{split}
+          = S_X(f) + \abs{G(f)}^2 \big[ \abs{H(f)}^2 S_X(f) + S_N(f) + 2 \re{H(f) X(f) N^*(f)} \big] \\
+          - 2 \re{X^*(f) G(f) \big[ H(f) X(f) + N(f) \big] }
+        \end{split} \\
+        \begin{split}
+	  = S_X(f) + \abs{G(f)}^2 \big[ \abs{H(f)}^2 S_X(f) + S_N(f) \big] \\ 
+	  - 2 \re{G(f) \big[ H(f) S_X(f) + X^*(f) N(f) \big] }
+        \end{split} \\
+        &= S_X(f) + \abs{G(f)}^2 \big[ \abs{H(f)}^2 S_X(f) + S_N(f) \big] - 2 \re{ G(f) H(f) } S_X(f)
+      \end{align}
+      This can of course be simplified further by assuming one or more of $G(f)$ and $H(f)$ are real.
+      
+    \item
+      \label{2c}
+      \begin{gather}
+        \abs{G(f)}^2 = \frac{ \abs{H(f)}^2 S_X^2(f) }{ \abs{H(f)}^4 S_X^2(f) + S_N^2(f) + \abs{H(f)}^2 S_X(f) S_N(f) } \\
+        = \frac{ \abs{H(f)}^2 S_X^2(f) }{ \abs{H(f)}^4 S_X^2(f) + S_N^2(f)} \\
+        \begin{split}
+	  S_D(f) = S_X(f) + \frac{ \abs{H(f)}^2 S_X^2(f) }{ \abs{H(f)}^4 S_X^2(f) + S_N^2(f)} ( \abs{H(f)}^2 S_X(f) + S_N(f) ) \\
+	  - 2 \re{ \frac{ H^*(f) S_X(f) }{ \abs{H(f)}^2 S_X(f) + S_N(f) } H(f) S_X(f) }
+	\end{split} \\
+	\begin{split}
+	  = S_X(f) + \frac{ \abs{H(f)}^2 S_X^2(f) }{ \abs{H(f)}^4 S_X^2(f) + S_N^2(f)} ( \abs{H(f)}^2 S_X(f) + S_N(f) ) \\
+	  - 2 \frac{ \abs{H(f)}^2 S_X^2(f) }{ \abs{H(f)}^2 S_X(f) + S_N(f) }
+	\end{split} \\
+	\begin{split}
+	  = S_X(f) + \frac{ \abs{H(f)}^2 S_X^2(f) \abs{H(f)}^2 S_X(f) + \abs{H(f)}^2 S_X^2(f) S_N(f) }{ \abs{H(f)}^4 S_X^2(f) + S_N^2(f)}  \\
+	  - 2 \frac{ \abs{H(f)}^2 S_X^2(f) }{ \abs{H(f)}^2 S_X(f) + S_N(f) }
+	\end{split} \\
+	\begin{split}
+	  = S_X(f) + \frac{ \abs{H(f)}^4 S_X^3(f) }{ \abs{H(f)}^4 S_X^2(f) + S_N^2(f)} %
+	  - 2 \frac{ \abs{H(f)}^2 S_X^2(f) }{ \abs{H(f)}^2 S_X(f) + S_N(f) }
+	\end{split}
+      \end{gather}
+      
+    \item
+      \label{2d}
+      \begin{itemize}
+        \item 
+	  \begin{gather}
+	    S_N(f) = \abs{\frac{N_0} 2}^2 = \frac{ \abs{N_0}^2} 4 \\
+	    S_D= S_X(f) + \frac{ \abs{A}^4 S_X^3(f) }{ \abs{A}^4 S_X^2(f) + \frac{ \abs{N_0}^4} {16} } - 2 \frac{ \abs{A}^2 S_X^2(f) }{ \abs{A}^2 S_X(f) + \frac{ \abs{N_0}^2} 4 }
+	  \end{gather}
+	
+	\item
+	  \begin{gather}
+% 	    \begin{split}
+	      S_D= S_X(f) + \frac{ \abs{\frac{B}{\sqrt{S_X(f)}}}^4 S_X^3(f) }{ \abs{\frac{B}{\sqrt{S_X(f)}}}^4 S_X^2(f) + \frac{ \abs{N_0}^4} {16} } - 2 \frac{ \abs{\frac{B}{\sqrt{S_X(f)}}}^2 S_X^2(f) }{ \abs{\frac{B}{\sqrt{S_X(f)}}}^2 S_X(f) + \frac{ \abs{N_0}^2} 4 } \\
+	      %
+	      S_D= S_X(f) + \frac{ \frac{\abs{B}^4}{S_X^2(f)} S_X^3(f) }{ \frac{\abs{B}^4}{S_X^2(f)} S_X^2(f) + \frac{ \abs{N_0}^4} {16} } - 2 \frac{ \frac{\abs{B}^2}{S_X(f)} S_X^2(f) }{ \frac{\abs{B}^2}{S_X(f)} S_X(f) + \frac{ \abs{N_0}^2} 4 } \\
+	      %
+	      S_D= S_X(f) + \frac{ {\abs{B}^4} S_X(f) }{ {\abs{B}^4} + \frac{ \abs{N_0}^4} {16} } - 2 \frac{ {\abs{B}^2} S_X(f) }{ {\abs{B}^2} + \frac{ \abs{N_0}^2} 4 } \\
+	      %
+	      S_D= S_X(f) \left( 1 + \frac{ {\abs{B}^4} }{ {\abs{B}^4} + \frac{ \abs{N_0}^4} {16} } - 2 \frac{ {\abs{B}^2} }{ {\abs{B}^2} + \frac{ \abs{N_0}^2} 4 } \right)
+% 	    \end{split}
+	  \end{gather}
+	
+	\item
+	  \begin{gather}
+	    A = \frac{C}{\sqrt[4]{S_X(f)}} \\
+	    S_D= S_X(f) + \frac{ \abs{\frac{C}{\sqrt[4]{S_X(f)}}}^4 S_X^3(f) }{ \abs{\frac{C}{\sqrt[4]{S_X(f)}}}^4 S_X^2(f) + \frac{ \abs{N_0}^4} {16} } %
+	    - 2 \frac{ \abs{\frac{C}{\sqrt[4]{S_X(f)}}}^2 S_X^2(f) }{ \abs{\frac{C}{\sqrt[4]{S_X(f)}}}^2 S_X(f) + \frac{ \abs{N_0}^2} 4 } \\
+	    %
+	    S_D= S_X(f) + \frac{ \frac{\abs{C}^4}{{S_X(f)}} S_X^3(f) }{ \frac{\abs{C}^4}{{S_X(f)}} S_X^2(f) + \frac{ \abs{N_0}^4} {16} } %
+	    - 2 \frac{ \frac{\abs{C}^2}{\sqrt{S_X(f)}} S_X^2(f) }{ \frac{\abs{C}^2}{\sqrt{S_X(f)}} S_X(f) + \frac{ \abs{N_0}^2} 4 } \\
+	    %
+	    S_D= S_X(f) + \frac{ {\abs{C}^4} S_X^2(f) }{ {\abs{C}^4} S_X(f) + \frac{ \abs{N_0}^4} {16} } %
+	    - 2 \frac{ {\abs{C}^2} S_X^{\frac 3 2}(f) }{ {\abs{C}^2} \sqrt{S_X(f)} + \frac{ \abs{N_0}^2} 4 }
+	  \end{gather}
+
+      \end{itemize}
+    
+    \item
+      \label{2e}
+    \item
+      \label{2f}
+    \item
+      \label{2g}
+      Sub-problems \ref{2e} -- \ref{2g} are not answered, due to time constraints.
+
+  \end{enumerate}
+
+\end{document}
