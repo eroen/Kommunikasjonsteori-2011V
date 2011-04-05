@@ -8,10 +8,12 @@
 
 clear;
 close all;
+format compact;
+format long g;
 defaultStream = RandStream.getDefaultStream();
 reset(defaultStream);
 
-k = tan(pi.*[0.38,0.4,0.46,0.5]);
+k = tan(pi.*[0.38,0.4,0.46,0.49]);
 imphp = synN(1,0,k);
 implp = synN(0,1,k);
 
@@ -160,7 +162,7 @@ max(max(abs(R(crosstestrow, crosscol))))
 
 defaultStream = RandStream.getDefaultStream();
 reset(defaultStream);
-L=1e6;
+L=163;
 x=randn(4, L);
 y=synN( synN(x(1,:), x(2,:), k), synN(x(3,:), x(4,:), k), k);
 %[zprime]=zeros(2, 20016);
@@ -185,12 +187,19 @@ max(max(x - z(:, 1+offset:L+offset)))
 % calculate the variance (power) of the transmitted signal to obtain the 
 % correct noise variance or power.
 
-x=(randi(2, 4, L) * 2) - 3;
+close all
+clear zprime x y z
+defaultStream = RandStream.getDefaultStream();
+reset(defaultStream);
+m=4;
+L=4e6/m;
+x=(randi(2, m, L) * 2) - 3;
+k = tan(pi.*[0.38,0.4,0.46,0.49]);
 y=synN( synN(x(1,:), x(2,:), k), synN(x(3,:), x(4,:), k), k);
 n0=randn(size(y));
 S=var(y);
 
-SNR=db2pow(4);
+SNR=db2pow(10);
 N=S/SNR;
 n=(N/var(n0))*n0;
 ynoisy=y+n;
@@ -204,8 +213,9 @@ ynoisy=y+n;
 % will calculate to |BER=10^-5|, and should use a length of |L=10^6|.
 %
 % The tested values for SNR were found experimentally.
-snrval=[-30:5:-10 -5:6 6.3 6.4];
+snrval=fliplr(sort([-30:5:-10 -5:6 6.2 6.4 6.5]));
 ival= 1:length(snrval);
+offset=0;
 for i = ival
     SNR=db2pow(snrval(i));
     N=S/SNR;
@@ -214,6 +224,9 @@ for i = ival
     [zprime(1,:), zprime(2,:)]=anaN(yn, k);
     [z(1,:), z(2,:)]=anaN(zprime(1,:), k);
     [z(3,:), z(4,:)]=anaN(zprime(2,:), k);
+    if i==1
+        offset=find(xcorr(x(1,:), z(1,:))>=max(xcorr(x(1,:), z(1,:))), 1)-L;
+    end
 
     zregen=zeros(size(z))-1;
     idx=find(z>0);
@@ -221,14 +234,17 @@ for i = ival
 
     ierr=find(not(x == zregen(:, offset+1:L+offset)));
     nerr=length(ierr);
-    BER(i)=nerr/(L*4);
+    BER(i)=nerr/(L*m);
 end
+
+sortrows([snrval; BER]')
 
 
 %% Problem 2 f)
 % The BER curve is plotted below.
 
 semilogy(snrval, BER);
+axis([floor(min(snrval)) ceil(max(snrval)) 1e-5*0.5 0.5*1.5]);
 title('Bit error rate, 4 channels');
 xlabel('SNR [dB]');
 ylabel('BER');
@@ -238,15 +254,20 @@ ylabel('BER');
 % 8-channel system.
 clear zprime z BER x y yn n0
 
-x=(randi(2, 8, L) * 2) - 3;
+defaultStream = RandStream.getDefaultStream();
+reset(defaultStream);
+m=8;
+L=4e6/m;
+x=(randi(2, m, L) * 2) - 3;
+k = tan(pi.*[0.38,0.4,0.46,0.49]);
 y=synN(synN( synN(x(1,:), x(2,:), k), synN(x(3,:), x(4,:), k), k), ... 
        synN( synN(x(5,:), x(6,:), k), synN(x(7,:), x(8,:), k), k), k);
 n0=randn(size(y));
 S=var(y);
 
-snrval=fliplr([-30:5:-10 -5:6 6.3 6.4]);
+snrval=fliplr(sort([-30:5:-10 -5:6 6.2 6.4 6.5]));
 ival= 1:length(snrval);
-
+offset=0;
 for i = ival
     SNR=db2pow(snrval(i));
     N=(S/var(n0))/SNR;
@@ -262,7 +283,7 @@ for i = ival
     [z(7,:), z(8,:)]=anaN(zprime(4,:), k);
     clear zprime
     if i==1
-        offset=find(xcorr(x(1,:), z(1,:))>=L/2)-L;
+        offset=find(xcorr(x(1,:), z(1,:))>=max(xcorr(x(1,:), z(1,:))), 1)-L;
     end
 
     zregen=zeros(size(z))-1;
@@ -271,10 +292,13 @@ for i = ival
 
     ierr=find(not(x == zregen(:, offset+1:L+offset)));
     nerr=length(ierr);
-    BER(i)=nerr/(L*8);
+    BER(i)=nerr/(L*m);
 end
 
+sortrows([snrval; BER]')
+
 semilogy(snrval, BER);
+axis([floor(min(snrval)) ceil(max(snrval)) 1e-5*0.5 0.5*1.5]);
 title('Bit error rate, 8 channels');
 xlabel('SNR [dB]');
 ylabel('BER');
